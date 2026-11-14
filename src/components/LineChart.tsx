@@ -67,11 +67,19 @@ export function LineChart({
     innerW <= 0
       ? []
       : series.map((s) => {
+          // Non-finite values leave a gap (e.g. a curve that is still being drawn).
           let d = ''
+          let pen = false
           for (let i = 0; i <= samples; i++) {
             const x = x0 + ((x1 - x0) * i) / samples
-            const y = Math.max(y0 - (y1 - y0), Math.min(y1 + (y1 - y0), s.fn(x)))
-            d += `${i === 0 ? 'M' : 'L'}${sx(x).toFixed(2)},${sy(y).toFixed(2)}`
+            const v = s.fn(x)
+            if (!Number.isFinite(v)) {
+              pen = false
+              continue
+            }
+            const y = Math.max(y0 - (y1 - y0), Math.min(y1 + (y1 - y0), v))
+            d += `${pen ? 'L' : 'M'}${sx(x).toFixed(2)},${sy(y).toFixed(2)}`
+            pen = true
           }
           return d
         })
@@ -155,7 +163,7 @@ export function LineChart({
           {hoverX !== null && (
             <g pointerEvents="none">
               <line x1={sx(hoverX)} x2={sx(hoverX)} y1={M.top} y2={M.top + innerH} stroke="var(--text-muted)" />
-              {series.map((s) => (
+              {series.filter((s) => Number.isFinite(s.fn(hoverX))).map((s) => (
                 <circle
                   key={s.name}
                   cx={sx(hoverX)}
@@ -197,7 +205,7 @@ export function LineChart({
                 <span className="legend-line" style={{ background: s.color }} />
                 {s.name}
               </span>
-              <span className="mono">{formatY(s.fn(hoverX))}</span>
+              <span className="mono">{Number.isFinite(s.fn(hoverX)) ? formatY(s.fn(hoverX)) : '—'}</span>
             </div>
           ))}
           {tooltipExtra?.(hoverX)}

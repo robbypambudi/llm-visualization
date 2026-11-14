@@ -21,13 +21,13 @@ export const CHAPTER_GROUPS: ChapterGroup[] = [
         id: 'tokenization',
         title: 'Tokenization',
         summary: 'Teks dipecah menjadi token (mis. BPE) lalu dipetakan ke ID.',
-        status: 'planned',
+        status: 'ready',
       },
       {
         id: 'token-embedding',
         title: 'Token Embedding',
         summary: 'Setiap ID token mengambil satu baris dari matriks embedding.',
-        status: 'planned',
+        status: 'ready',
       },
       {
         id: 'positional-encoding',
@@ -104,7 +104,7 @@ export const CHAPTER_GROUPS: ChapterGroup[] = [
 
 export const ALL_CHAPTERS: Chapter[] = CHAPTER_GROUPS.flatMap((g) => g.chapters)
 
-export const DEFAULT_CHAPTER_ID = 'positional-encoding'
+export const DEFAULT_CHAPTER_ID = 'tokenization'
 
 export function chapterNumber(id: string): number {
   return ALL_CHAPTERS.findIndex((c) => c.id === id) + 1

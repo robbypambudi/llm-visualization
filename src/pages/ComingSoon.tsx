@@ -7,7 +7,7 @@ export function ComingSoon({ chapter }: { chapter: Chapter }) {
       <h1 style={{ fontSize: 34, margin: '6px 0 12px' }}>{chapter.title}</h1>
       <p className="lede">{chapter.summary}</p>
       <div className="callout">
-        Bab ini belum dibuat. Mulai dari <a href="#/positional-encoding">Positional Encoding</a>.
+        Bab ini belum dibuat. Mulai dari <a href="#/tokenization">Tokenization</a>.
       </div>
     </article>
   )

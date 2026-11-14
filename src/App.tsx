@@ -4,6 +4,8 @@ import { Sidebar } from './components/Sidebar'
 import { applyThemePref, readThemePref, useChartTheme } from './lib/theme'
 import { ComingSoon } from './pages/ComingSoon'
 import { PositionalEncodingPage } from './pages/positional-encoding/PositionalEncodingPage'
+import { TokenEmbeddingPage } from './pages/token-embedding/TokenEmbeddingPage'
+import { TokenizationPage } from './pages/tokenization/TokenizationPage'
 
 function readRoute(): string {
   const id = window.location.hash.replace(/^#\/?/, '')
@@ -50,7 +52,15 @@ export default function App() {
           <strong>{chapter.title}</strong>
         </div>
         <main className="main">
-          {chapter.id === 'positional-encoding' ? <PositionalEncodingPage theme={theme} /> : <ComingSoon chapter={chapter} />}
+          {chapter.id === 'tokenization' ? (
+            <TokenizationPage />
+          ) : chapter.id === 'token-embedding' ? (
+            <TokenEmbeddingPage theme={theme} />
+          ) : chapter.id === 'positional-encoding' ? (
+            <PositionalEncodingPage theme={theme} />
+          ) : (
+            <ComingSoon chapter={chapter} />
+          )}
         </main>
       </div>
     </div>

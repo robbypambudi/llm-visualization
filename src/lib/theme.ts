@@ -53,7 +53,7 @@ export function useChartTheme() {
     return {
       version,
       diverging,
-      series: [v('--series-1'), v('--series-2'), v('--series-3')],
+      series: [v('--series-1'), v('--series-2'), v('--series-3'), v('--series-4')],
       surface: v('--surface-1'),
       surface2Rgb: hexToRgb(v('--surface-2')),
       textPrimary: v('--text-primary'),
