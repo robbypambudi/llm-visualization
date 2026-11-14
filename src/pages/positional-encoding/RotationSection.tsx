@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Slider } from '../../components/Controls'
+import { Deep, Takeaway } from '../../components/Prose'
 import { Tex } from '../../components/Tex'
 import { frequency, shiftMatrix } from '../../lib/positional'
 import type { ChartTheme } from '../../lib/theme'
@@ -40,23 +41,36 @@ export function RotationSection({ params, theme }: Props) {
   return (
     <section className="section" id="rotation">
       <h2>
-        <span className="section-num">7</span>Menggeser posisi = memutar vektor
+        <span className="section-num">8</span>Maju beberapa langkah = memutar jarum
       </h2>
       <div className="prose">
         <p>
-          Paper Transformer memilih fungsi ini karena untuk offset tetap <em>k</em>,{' '}
-          <Tex>{`PE_{pos+k}`}</Tex> dapat ditulis sebagai <strong>fungsi linear</strong> dari <Tex>{`PE_{pos}`}</Tex>. Untuk
-          setiap pasangan dimensi, fungsi linear itu adalah matriks rotasi yang hanya bergantung pada <em>k</em>, bukan
-          pada <em>pos</em>:
+          Kembali ke analogi jam. Kalau kamu maju <em>k</em> langkah, setiap jarum berputar sejauh sudut tertentu. Besar
+          sudutnya hanya bergantung pada <em>k</em>, tidak peduli kamu mulai dari posisi berapa. Maju 5 langkah dari
+          posisi 10 sama saja dengan maju 5 langkah dari posisi 80: jarumnya diputar sejauh sudut yang sama.
         </p>
-      </div>
-      <Tex block>{`\\begin{pmatrix} \\sin((pos+k)\\omega_i) \\\\ \\cos((pos+k)\\omega_i) \\end{pmatrix} = \\underbrace{\\begin{pmatrix} \\cos k\\omega_i & \\sin k\\omega_i \\\\ -\\sin k\\omega_i & \\cos k\\omega_i \\end{pmatrix}}_{M_k} \\begin{pmatrix} \\sin(pos\\,\\omega_i) \\\\ \\cos(pos\\,\\omega_i) \\end{pmatrix}`}</Tex>
-      <div className="prose">
         <p>
-          Paper menyebut ini sebagai hipotesis: sifat tersebut <em>diharapkan</em> memudahkan model belajar memperhatikan
-          posisi relatif. Ide “posisi sebagai rotasi” ini kemudian dibuat eksplisit oleh RoPE.
+          Artinya, ada <strong>satu aturan geser</strong> yang berlaku di mana saja. Inilah alasan utama yang ditulis
+          paper saat memilih sin dan cos. Penulisnya berharap aturan ini memudahkan model belajar posisi relatif, misalnya
+          “perhatikan kata yang dua langkah sebelum aku”. Paper menyebutnya hipotesis, bukan sesuatu yang sudah dibuktikan.
+        </p>
+        <p>
+          Di bawah ini, titik biru adalah jarum di posisi awal dan titik oranye adalah jarum setelah maju <em>k</em>{' '}
+          langkah. Coba ubah <strong>posisi terpilih</strong> di panel atas: titiknya pindah, tetapi aturan gesernya (
+          <Tex>{`M_k`}</Tex>) tidak berubah.
         </p>
       </div>
+      <Deep title="Untuk yang penasaran: aturan gesernya dalam bentuk matriks">
+        <p>
+          Untuk setiap pasangan, aturan geser itu adalah matriks rotasi 2×2 <Tex>{`M_k`}</Tex>. Matriks ini hanya
+          bergantung pada <Tex>{`k`}</Tex>, bukan pada <Tex>{`pos`}</Tex>. Dalam bahasa matematika,{' '}
+          <Tex>{`PE_{pos+k}`}</Tex> adalah <strong>fungsi linear</strong> dari <Tex>{`PE_{pos}`}</Tex>:
+        </p>
+      <Tex block>{`\\begin{pmatrix} \\sin((pos+k)\\omega_i) \\\\ \\cos((pos+k)\\omega_i) \\end{pmatrix} = \\underbrace{\\begin{pmatrix} \\cos k\\omega_i & \\sin k\\omega_i \\\\ -\\sin k\\omega_i & \\cos k\\omega_i \\end{pmatrix}}_{M_k} \\begin{pmatrix} \\sin(pos\\,\\omega_i) \\\\ \\cos(pos\\,\\omega_i) \\end{pmatrix}`}</Tex>
+        <p>
+          Ide “posisi sebagai putaran” ini kemudian dipakai secara langsung oleh RoPE (bagian 10).
+        </p>
+      </Deep>
       <div className="card">
         <div className="controls" style={{ marginBottom: 12 }}>
           <Slider label="pasangan i" value={pair} min={0} max={d / 2 - 1} onChange={setPair} />
@@ -134,6 +148,7 @@ export function RotationSection({ params, theme }: Props) {
           </div>
         </div>
       </div>
+      <Takeaway>Maju k langkah selalu berarti memutar jarum sejauh sudut yang sama, dari posisi mana pun.</Takeaway>
     </section>
   )
 }

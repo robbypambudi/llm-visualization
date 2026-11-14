@@ -28,12 +28,14 @@ export function VariantsSection({ params, theme }: Props) {
   return (
     <section className="section" id="variants">
       <h2>
-        <span className="section-num">9</span>Varian yang dipakai LLM modern
+        <span className="section-num">10</span>Cara lain yang dipakai LLM modern
       </h2>
       <div className="prose">
         <p>
-          Sinusoidal hanyalah salah satu cara. Model-model setelahnya memakai pendekatan berbeda: posisi yang dipelajari
-          (GPT-2, BERT), rotasi pada query/key (RoPE — dipakai LLaMA), atau bias langsung pada skor attention (ALiBi).
+          Rumus sinusoidal adalah cara pertama, bukan satu-satunya. Model-model sesudahnya mencoba cara lain. Ada yang
+          membiarkan model mempelajari tandanya sendiri (GPT-2, BERT). Ada yang memutar vektor di dalam attention (RoPE,
+          dipakai LLaMA). Ada juga yang langsung mengurangi skor attention sesuai jarak (ALiBi). Pilih tab untuk melihat
+          masing-masing.
         </p>
       </div>
       <Segmented
@@ -61,14 +63,14 @@ function Learned() {
       <div className="card-title">Learned absolute position embedding</div>
       <div className="prose">
         <p>
-          Alih-alih rumus, model menyimpan matriks <Tex>{`P \\in \\mathbb{R}^{L_{max} \\times d}`}</Tex> yang dilatih
-          bersama bobot lainnya, lalu <Tex>{`x_{pos} = E[\\text{token}_{pos}] + P[pos]`}</Tex>. Konsekuensinya, model
-          tidak punya vektor untuk posisi <Tex>{`\\ge L_{max}`}</Tex>.
+          Alih-alih rumus, model menyimpan sebuah <strong>tabel</strong>: satu baris vektor untuk setiap posisi. Isi tabel
+          ini awalnya acak, lalu ikut dipelajari selama pelatihan, sama seperti bobot lainnya. Tanda posisi diambil dari
+          baris yang sesuai: <Tex>{`x_{pos} = E[\\text{token}_{pos}] + P[pos]`}</Tex>.
         </p>
         <p>
-          Paper Transformer sudah mencobanya (Tabel 3, baris E) dan mendapatkan hasil yang hampir sama dengan sinusoidal
-          (BLEU dev 25,7 vs 25,8). Mereka memilih sinusoidal karena <em>mungkin</em> memungkinkan ekstrapolasi ke urutan
-          yang lebih panjang daripada saat pelatihan.
+          Kelemahannya, ukuran tabel sudah ditetapkan sejak awal. GPT-2 hanya punya 1024 baris, jadi ia tidak punya tanda
+          untuk posisi ke-1024 dan seterusnya. Paper Transformer sudah mencoba cara ini dan hasilnya hampir sama dengan
+          sinusoidal (BLEU 25.7 vs 25.8, Tabel 3 baris E).
         </p>
       </div>
       <div className="table-scroll">
@@ -153,17 +155,28 @@ function Rope({ params, theme }: Props) {
         <div className="card-title">RoPE — Rotary Position Embedding (Su dkk., RoFormer)</div>
         <div className="prose">
           <p>
-            RoPE tidak menambahkan apa pun ke embedding. Di setiap lapisan attention, vektor <strong>query dan key</strong>{' '}
-            (setelah proyeksi <Tex>{`W_Q, W_K`}</Tex>; value tidak diubah) diputar per pasangan dimensi dengan sudut yang
-            sebanding dengan posisinya. Frekuensinya sama dengan sinusoidal: <Tex>{`\\theta_i = 10000^{-2i/d}`}</Tex>.
+            Di attention, setiap kata membuat dua vektor: <strong>query</strong> (“aku sedang mencari apa?”) dan{' '}
+            <strong>key</strong> (“aku berisi apa?”). Skor attention adalah seberapa cocok query satu kata dengan key kata
+            lain.
+          </p>
+          <p>
+            RoPE tidak menambahkan tanda apa pun ke vektor kata. Sebagai gantinya, query dan key{' '}
+            <strong>diputar</strong> per pasangan angka, dengan sudut yang sebanding dengan posisinya. Ini meneruskan
+            analogi jam dari bagian 8, dengan kecepatan putar yang sama seperti sinusoidal:{' '}
+            <Tex>{`\\theta_i = 10000^{-2i/d}`}</Tex>. Vektor ketiga (value) tidak diputar.
+          </p>
+          <p>
+            Kenapa diputar? Kalau dua jarum sama-sama diputar, yang tersisa saat keduanya dibandingkan hanyalah{' '}
+            <strong>selisih sudutnya</strong>. Akibatnya, skor attention hanya bergantung pada jarak antar kata, bukan pada
+            posisi masing-masing.
           </p>
         </div>
         <Tex block>{`R_{\\Theta,m}\\,x = \\begin{pmatrix}x_1\\\\x_2\\\\x_3\\\\x_4\\\\\\vdots\\end{pmatrix}\\otimes\\begin{pmatrix}\\cos m\\theta_1\\\\\\cos m\\theta_1\\\\\\cos m\\theta_2\\\\\\cos m\\theta_2\\\\\\vdots\\end{pmatrix} + \\begin{pmatrix}-x_2\\\\x_1\\\\-x_4\\\\x_3\\\\\\vdots\\end{pmatrix}\\otimes\\begin{pmatrix}\\sin m\\theta_1\\\\\\sin m\\theta_1\\\\\\sin m\\theta_2\\\\\\sin m\\theta_2\\\\\\vdots\\end{pmatrix}`}</Tex>
         <div className="prose">
           <p>
-            Karena rotasi mempertahankan sudut relatif, <Tex>{`(R_{m} q)^\\top (R_{n} k) = q^\\top R_{n-m}\\, k`}</Tex>:
-            skor attention hanya bergantung pada jarak <Tex>{`m-n`}</Tex>, bukan posisi absolutnya. (Persamaan di atas
-            memakai indeks 1 seperti di paper; aplikasi ini memakai indeks 0.)
+            Rumus di atas adalah cara RoPE memutar vektor <Tex>{`x`}</Tex> di posisi <Tex>{`m`}</Tex>. Dalam bentuk
+            matematika, <Tex>{`(R_{m} q)^\\top (R_{n} k) = q^\\top R_{n-m}\\, k`}</Tex>: skor hanya bergantung pada
+            jarak <Tex>{`m-n`}</Tex>. (Rumus di paper memakai indeks mulai dari 1. Aplikasi ini mulai dari 0.)
           </p>
         </div>
       </div>
@@ -258,7 +271,7 @@ function Rope({ params, theme }: Props) {
             <div className="card-title">Skor (R_m q)·(R_n k) untuk semua m, n</div>
             <ColorBar scale={theme.diverging} min="−max" max="+max" />
           </div>
-          <div className="card-sub">Setiap diagonal bernilai konstan: skor hanya fungsi dari m − n.</div>
+          <div className="card-sub">Warnanya sama di sepanjang setiap garis miring: skor hanya bergantung pada jarak m − n.</div>
           <Heatmap
             data={grid}
             rows={ROPE_GRID}
@@ -288,7 +301,7 @@ function Rope({ params, theme }: Props) {
         <div className="card">
           <div className="card-title">Long-term decay (RoFormer §3.4.3)</div>
           <div className="card-sub">
-            Batas atas skor sebanding dengan <Tex>{`\\tfrac{1}{d/2}\\sum_{j=1}^{d/2}|S_j|`}</Tex>,{' '}
+            Makin jauh dua kata, makin kecil skor tertinggi yang bisa dicapai, meski turunnya tidak mulus. Secara teknis, batas atas skor sebanding dengan <Tex>{`\\tfrac{1}{d/2}\\sum_{j=1}^{d/2}|S_j|`}</Tex>,{' '}
             <Tex>{`S_j=\\sum_{i=0}^{j-1} e^{\\mathrm{i}(m-n)\\theta_i}`}</Tex>, yang cenderung turun saat jarak bertambah.
           </div>
           <LineChart
@@ -337,8 +350,10 @@ function Alibi({ theme }: Props) {
         <div className="card-title">ALiBi — Attention with Linear Biases (Press dkk., 2021)</div>
         <div className="prose">
           <p>
-            ALiBi tidak menambahkan positional embedding sama sekali. Ia menambahkan bias tetap (tidak dilatih) ke skor
-            attention sebelum softmax, sebanding dengan jarak antara query <em>i</em> dan key <em>j</em>:
+            ALiBi lebih sederhana lagi: tidak ada tanda posisi sama sekali. Ia hanya memberi “potongan nilai” pada skor
+            attention. Makin jauh sebuah kata, makin besar potongannya, sehingga kata yang dekat lebih mudah diperhatikan.
+            Potongan ini tetap dan tidak dilatih. Ia ditambahkan sebelum softmax, yaitu langkah yang mengubah skor menjadi
+            persentase perhatian.
           </p>
         </div>
         <Tex block>{`\\text{softmax}\\big(q_i K^\\top + m \\cdot [-(i-1), \\dots, -2, -1, 0]\\big)`}</Tex>
@@ -346,7 +361,8 @@ function Alibi({ theme }: Props) {
           <p>
             Setiap head memakai kemiringan <Tex>{`m`}</Tex> berbeda: untuk <Tex>{`n`}</Tex> head, deret geometri yang
             dimulai dari <Tex>{`2^{-8/n}`}</Tex> dengan rasio yang sama. Untuk 8 head: <Tex>{`\\tfrac12, \\tfrac14, \\dots, \\tfrac1{256}`}</Tex>.
-            Head dengan kemiringan besar fokus ke token dekat; kemiringan kecil bisa melihat lebih jauh.
+            Attention punya beberapa “kepala” (head) yang bekerja bersamaan. Head dengan kemiringan besar fokus ke kata
+            yang dekat. Head dengan kemiringan kecil masih bisa melihat jauh.
           </p>
         </div>
       </div>

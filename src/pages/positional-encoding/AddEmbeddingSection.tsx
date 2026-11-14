@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ColorBar, Heatmap } from '../../components/Heatmap'
+import { Takeaway } from '../../components/Prose'
 import { Tex } from '../../components/Tex'
 import { hashString, peMatrix, randomNormalVector } from '../../lib/positional'
 import type { ChartTheme } from '../../lib/theme'
@@ -56,13 +57,20 @@ export function AddEmbeddingSection({ params, theme }: Props) {
   return (
     <section className="section" id="add">
       <h2>
-        <span className="section-num">8</span>PE dijumlahkan ke embedding token
+        <span className="section-num">9</span>Tanda posisi dijumlahkan ke vektor kata
       </h2>
       <div className="prose">
         <p>
-          PE punya dimensi yang sama dengan embedding (<Tex>{`d_{model}`}</Tex>), sehingga keduanya bisa{' '}
-          <strong>dijumlahkan</strong>, bukan digabung (concat). Di lapisan embedding, paper juga mengalikan bobot
-          embedding dengan <Tex>{`\\sqrt{d_{model}}`}</Tex>:
+          Langkah terakhir: tanda posisi <strong>dijumlahkan</strong> ke vektor kata (embedding). Panjang keduanya sama (
+          <Tex>{`d_{model}`}</Tex>), jadi tinggal dijumlahkan angka demi angka. Hasilnya inilah yang masuk ke Transformer.
+        </p>
+        <p>
+          Kenapa dijumlahkan, bukan disambung di belakangnya? Paper tidak menjelaskannya. Satu akibat yang jelas: dengan
+          dijumlahkan, panjang vektor tetap <Tex>{`d_{model}`}</Tex>, jadi model tidak perlu dibuat lebih lebar.
+        </p>
+        <p>
+          Paper juga mengalikan embedding dengan <Tex>{`\\sqrt{d_{model}}`}</Tex> sebelum dijumlahkan (§3.4), tanpa
+          menjelaskan alasannya. Di demo ini, perkalian itu membuat besar angka embedding sebanding dengan tanda posisi.
         </p>
       </div>
       <Tex block>{`x_{pos} = \\sqrt{d_{model}}\\; E[\\text{token}_{pos}] + PE_{pos}`}</Tex>
@@ -76,7 +84,7 @@ export function AddEmbeddingSection({ params, theme }: Props) {
         />
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
           <div className="card-sub">
-            Perhatikan dua token “the”: embedding-nya identik, tetapi setelah ditambah PE vektornya berbeda.
+            Perhatikan dua kata “the”. Embedding-nya sama persis, tetapi setelah ditambah tanda posisi, vektornya berbeda.
           </div>
           <ColorBar scale={theme.diverging} min={`−${VMAX}`} max={`+${VMAX}`} />
         </div>
@@ -107,6 +115,7 @@ export function AddEmbeddingSection({ params, theme }: Props) {
           lalu dikali √d agar skalanya sebanding dengan PE.
         </p>
       </div>
+      <Takeaway>Kata yang sama di posisi berbeda kini punya vektor yang berbeda. Masalah dari bagian 1 terpecahkan.</Takeaway>
     </section>
   )
 }

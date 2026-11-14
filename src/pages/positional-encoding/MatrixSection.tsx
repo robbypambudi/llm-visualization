@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { ColorBar, Heatmap } from '../../components/Heatmap'
+import { Takeaway } from '../../components/Prose'
 import { Tex } from '../../components/Tex'
 import { frequency, peMatrix, wavelength } from '../../lib/positional'
 import type { ChartTheme } from '../../lib/theme'
@@ -18,13 +19,17 @@ export function MatrixSection({ params, setPos, theme }: Props) {
   return (
     <section className="section" id="matrix">
       <h2>
-        <span className="section-num">3</span>Matriks positional encoding
+        <span className="section-num">4</span>Semua tanda posisi dalam satu gambar
       </h2>
       <div className="prose">
         <p>
-          Setiap baris adalah vektor PE untuk satu posisi, setiap kolom adalah satu dimensi. Kolom di kiri berosilasi
-          cepat (frekuensi tinggi); makin ke kanan, gelombangnya makin lambat sehingga kolom terlihat hampir konstan.
-          Arahkan kursor untuk melihat nilai persisnya, dan klik untuk memilih posisi.
+          Sekarang kita hitung tanda posisi dengan rumus tadi, lalu susun semuanya menjadi satu tabel warna. Setiap{' '}
+          <strong>baris</strong> adalah tanda untuk satu posisi. Setiap <strong>kolom</strong> adalah satu angka di dalam
+          tanda itu. Merah berarti positif, biru negatif.
+        </p>
+        <p>
+          Kolom di kiri warnanya cepat berganti, sedangkan kolom di kanan hampir tidak berubah. Ini pola yang sama dengan
+          biner di bagian 2, hanya lebih halus. Arahkan kursor ke sel untuk melihat nilainya, lalu klik untuk memilih posisi.
         </p>
       </div>
       <div className="card">
@@ -88,6 +93,7 @@ export function MatrixSection({ params, setPos, theme }: Props) {
         />
       </div>
       <PositionVector params={params} data={data} />
+      <Takeaway>Tidak ada dua baris yang sama, jadi setiap posisi punya tanda yang unik.</Takeaway>
     </section>
   )
 }
@@ -97,10 +103,10 @@ function PositionVector({ params, data }: { params: PeParams; data: Float64Array
   const shown = Math.min(d, 8)
   return (
     <div className="card">
-      <div className="card-title">Vektor PE di posisi {pos} (beberapa dimensi pertama)</div>
+      <div className="card-title">Isi tanda posisi {pos} (beberapa angka pertama)</div>
       <div className="card-sub">
-        Pasangan <Tex>{`i = 0`}</Tex> punya <Tex>{`\\omega_0 = 1`}</Tex>, jadi sudutnya sama dengan posisinya:{' '}
-        <Tex>{`${pos}`}</Tex> radian.
+        ω (omega) adalah kecepatan putar pasangan itu. Sudut = posisi × ω. Pasangan pertama punya{' '}
+        <Tex>{`\\omega_0 = 1`}</Tex>, jadi sudutnya sama dengan posisinya: <Tex>{`${pos}`}</Tex> radian.
       </div>
       <div className="table-scroll">
         <table className="table">

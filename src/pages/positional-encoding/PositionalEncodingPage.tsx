@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react'
 import { Field, Segmented, Slider } from '../../components/Controls'
-import { Tex } from '../../components/Tex'
 import { chapterNumber } from '../../chapters'
 import type { ChartTheme } from '../../lib/theme'
 import { AddEmbeddingSection } from './AddEmbeddingSection'
 import { ClocksSection } from './ClocksSection'
+import { ClosingSection } from './ClosingSection'
+import { DesignSection } from './DesignSection'
+import { FormulaSection } from './FormulaSection'
 import { MatrixSection } from './MatrixSection'
 import { RotationSection } from './RotationSection'
 import { SimilaritySection } from './SimilaritySection'
@@ -29,33 +31,32 @@ export function PositionalEncodingPage({ theme }: { theme: ChartTheme }) {
         <div className="eyebrow">BAB {String(chapterNumber('positional-encoding')).padStart(2, '0')} · INPUT</div>
         <h1>Positional Encoding</h1>
         <p className="lede">
-          Attention tidak tahu urutan kata. Positional encoding memberi setiap posisi sebuah vektor unik agar model bisa
-          membedakan “token ke-1” dari “token ke-10”. Bab ini membedah versi sinusoidal dari paper{' '}
-          <em>Attention Is All You Need</em>, lalu membandingkannya dengan learned embedding, RoPE, dan ALiBi.
+          Transformer membaca semua kata sekaligus, jadi ia tidak tahu kata mana yang datang lebih dulu. Positional
+          encoding memberi setiap posisi sebuah “tanda” berupa deretan angka, mirip nomor kursi, agar model bisa membedakan
+          token ke-1 dari token ke-10. Bab ini membahas apa tanda itu, kenapa bentuknya begitu, dan apa alternatifnya.
         </p>
+        <div className="callout">
+          <div className="card-title" style={{ marginBottom: 8 }}>
+            Kosakata singkat
+          </div>
+          <dl className="glossary">
+            <dt>Token</dt>
+            <dd>Potongan teks yang dibaca model. Agar sederhana, di bab ini satu token dianggap satu kata.</dd>
+            <dt>Vektor</dt>
+            <dd>Deretan angka, misalnya [0.2, −1.3, 0.7]. Model hanya bisa mengolah angka, jadi setiap token diubah jadi vektor.</dd>
+            <dt>Dimensi</dt>
+            <dd>Satu angka di dalam vektor. Vektor dengan 512 angka disebut punya 512 dimensi.</dd>
+            <dt>Embedding</dt>
+            <dd>Vektor yang mewakili makna sebuah token. “Kucing” selalu mendapat embedding yang sama di posisi mana pun.</dd>
+            <dt>Attention</dt>
+            <dd>Bagian Transformer yang menentukan kata mana yang perlu diperhatikan oleh kata lain.</dd>
+          </dl>
+        </div>
       </header>
 
       <WhyPosition theme={theme} />
-
-      <section className="section" id="formula">
-        <h2>
-          <span className="section-num">2</span>Rumus sinusoidal
-        </h2>
-        <div className="prose">
-          <p>
-            Untuk posisi <Tex>{`pos`}</Tex> dan indeks pasangan <Tex>{`i \\in \\{0, \\dots, d/2-1\\}`}</Tex>, dimensi
-            genap memakai sinus dan dimensi ganjil memakai kosinus dengan frekuensi yang sama (Vaswani dkk., 2017, §3.5):
-          </p>
-        </div>
-        <Tex block>{`PE_{(pos,\\,2i)} = \\sin\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right), \\qquad PE_{(pos,\\,2i+1)} = \\cos\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)`}</Tex>
-        <div className="prose">
-          <p>
-            Ditulis dengan frekuensi sudut <Tex>{`\\omega_i = 10000^{-2i/d_{model}}`}</Tex>, nilainya adalah{' '}
-            <Tex>{`\\sin(pos\\,\\omega_i)`}</Tex> dan <Tex>{`\\cos(pos\\,\\omega_i)`}</Tex>. Di model dasar paper,{' '}
-            <Tex>{`d_{model} = 512`}</Tex>. Tidak ada parameter yang dilatih — semuanya dihitung dari rumus.
-          </p>
-        </div>
-      </section>
+      <DesignSection theme={theme} />
+      <FormulaSection />
 
       <div className="sticky-controls" style={{ marginTop: 32 }}>
         <div className="controls">
@@ -91,9 +92,10 @@ export function PositionalEncodingPage({ theme }: { theme: ChartTheme }) {
         </div>
       </div>
       <p className="card-sub" style={{ marginTop: 8 }}>
-        Kontrol ini berlaku untuk bagian 3–8. Paper memakai base 10000 dan layout <em>interleaved</em> (sin di dimensi
-        genap, cos di ganjil). Implementasi tensor2tensor menaruh semua sin lalu semua cos (<em>concat</em>) — frekuensinya
-        sama, hanya urutan kanalnya yang berbeda.
+        Panel ini mengatur bagian 4–9. <strong>d<sub>model</sub></strong> = panjang vektor, <strong>panjang urutan</strong>{' '}
+        = jumlah token, <strong>base</strong> = angka 10000 di rumus. Paper memakai base 10000 dan layout{' '}
+        <em>interleaved</em> (sin dan cos berselang-seling). Kode tensor2tensor dari Google menaruh semua sin dulu, lalu
+        semua cos (<em>concat</em>). Isinya sama, hanya urutan kolomnya yang berbeda.
       </p>
 
       <MatrixSection params={params} setPos={setPos} theme={theme} />
@@ -103,10 +105,11 @@ export function PositionalEncodingPage({ theme }: { theme: ChartTheme }) {
       <RotationSection params={params} theme={theme} />
       <AddEmbeddingSection params={params} theme={theme} />
       <VariantsSection params={params} theme={theme} />
+      <ClosingSection />
 
       <section className="section" id="refs">
         <h2>
-          <span className="section-num">10</span>Referensi
+          <span className="section-num">12</span>Referensi
         </h2>
         <ul className="refs">
           <li>
@@ -124,6 +127,16 @@ export function PositionalEncodingPage({ theme }: { theme: ChartTheme }) {
           <li>
             Haviv dkk. (2022).{' '}
             <a href="https://arxiv.org/abs/2203.16634">Transformer Language Models without Positional Encodings Still Learn Positional Information</a>.
+          </li>
+          <li>
+            Kazemnejad, A. (2019).{' '}
+            <a href="https://kazemnejad.com/blog/transformer_architecture_positional_encoding/">Transformer Architecture: The Positional Encoding</a>{' '}
+            — analogi biner dan daftar syarat.
+          </li>
+          <li>
+            Fleetwood, C. (2024).{' '}
+            <a href="https://huggingface.co/blog/designing-positional-encoding">You could have designed state of the art positional encoding</a>{' '}
+            — alur dari nomor urut ke biner, sinusoidal, lalu RoPE.
           </li>
           <li>
             Hugging Face Transformers — dokumentasi <a href="https://huggingface.co/docs/transformers/model_doc/gpt2">GPT-2</a>{' '}

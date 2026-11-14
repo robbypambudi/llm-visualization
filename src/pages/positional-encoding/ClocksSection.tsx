@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Slider } from '../../components/Controls'
+import { Takeaway } from '../../components/Prose'
 import { frequency, wavelength } from '../../lib/positional'
 import { fmtNum, type PeParams } from './state'
 
@@ -53,14 +54,18 @@ export function ClocksSection({ params, setPos }: Props) {
   return (
     <section className="section" id="clocks">
       <h2>
-        <span className="section-num">5</span>Analogi jam: setiap pasangan dimensi berputar
+        <span className="section-num">6</span>Analogi jam: setiap pasangan adalah jarum yang berputar
       </h2>
       <div className="prose">
         <p>
-          Pasangan <code>(sin, cos)</code> pada frekuensi yang sama adalah titik di lingkaran satuan. Saat posisi naik satu,
-          jarum pasangan <em>i</em> berputar sebesar ω<sub>i</sub> radian. Jarum di kiri berputar cepat, jarum di kanan
-          sangat lambat — mirip digit pada penghitung biner, tetapi kontinu. Kombinasi semua sudut ini memberi setiap
-          posisi “sidik jari” yang berbeda.
+          Anggap setiap pasangan (sin, cos) sebagai sebuah jam dengan satu jarum. Setiap kali posisi maju satu langkah,
+          semua jarum berputar, tetapi dengan kecepatan berbeda. Jarum pertama berputar 1 radian (sekitar 57°) per
+          langkah. Jarum-jarum berikutnya makin lambat.
+        </p>
+        <p>
+          Ini seperti jarum detik, menit, dan jam. Dengan melihat semua jarum sekaligus, kamu tahu persis jam berapa
+          sekarang. Begitu juga di sini: letak semua jarum bersama-sama menunjukkan posisi. Tekan <strong>Putar</strong>{' '}
+          dan perhatikan jarum di kiri berputar cepat, sedangkan jarum di kanan hampir diam.
         </p>
       </div>
       <div className="card">
@@ -87,11 +92,12 @@ export function ClocksSection({ params, setPos }: Props) {
           ))}
         </div>
         <p className="card-sub" style={{ marginTop: 12, marginBottom: 0 }}>
-          Komponen horizontal jarum = sin(pos·ω<sub>i</sub>) (dimensi 2i), komponen vertikal = cos(pos·ω<sub>i</sub>)
-          (dimensi 2i+1).
+          Seberapa jauh ujung jarum ke kanan = nilai sin (angka ke-2i). Seberapa jauh ke atas = nilai cos (angka ke-2i+1).
+          Angka kecil di bawah jam adalah panjang gelombangnya (λ), yaitu berapa langkah untuk satu putaran penuh.
           {d / 2 > MAX_CLOCKS && ` Ditampilkan ${MAX_CLOCKS} dari ${d / 2} pasangan, diambil merata.`}
         </p>
       </div>
+      <Takeaway>Tanda posisi = posisi semua jarum jam. Jarum cepat membedakan posisi yang dekat, jarum lambat membedakan posisi yang jauh.</Takeaway>
     </section>
   )
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Slider } from '../../components/Controls'
 import { Legend, LineChart, type LineSeries } from '../../components/LineChart'
+import { Deep, Takeaway } from '../../components/Prose'
+import { Tex } from '../../components/Tex'
 import { peValue, wavelength } from '../../lib/positional'
 import type { ChartTheme } from '../../lib/theme'
 import { describeDim, fmtNum, type PeParams } from './state'
@@ -27,14 +29,16 @@ export function WavesSection({ params, theme }: Props) {
   return (
     <section className="section" id="waves">
       <h2>
-        <span className="section-num">4</span>Setiap dimensi adalah sebuah gelombang
+        <span className="section-num">5</span>Setiap kolom adalah sebuah gelombang
       </h2>
       <div className="prose">
         <p>
-          Ambil satu kolom dari matriks di atas, lalu plot terhadap posisi: hasilnya sinus atau kosinus dengan panjang
-          gelombang <strong>λ<sub>i</sub> = 2π · base<sup>2i/d</sup></strong>. Dengan base 10000 seperti di paper, panjang
-          gelombang ini membentuk deret geometri dari 2π sampai 10000·2π. Token hanya berada di posisi bilangan bulat (titik), garis
-          kontinu hanya membantu mata.
+          Ambil satu kolom dari tabel warna tadi, lalu gambar nilainya dari posisi ke posisi. Hasilnya sebuah gelombang.
+          Kolom-kolom awal gelombangnya rapat (cepat berulang), sedangkan kolom-kolom akhir sangat renggang.
+        </p>
+        <p>
+          <strong>λ</strong> (lambda) di legenda adalah panjang gelombang: berapa langkah posisi yang dibutuhkan untuk
+          kembali ke titik awal. Token hanya ada di posisi bulat (titik-titik). Garisnya hanya membantu mata.
         </p>
       </div>
       <div className="card">
@@ -70,6 +74,15 @@ export function WavesSection({ params, theme }: Props) {
           Sumbu x dibatasi 64 posisi pertama agar titik per token tetap terbaca.
         </p>
       </div>
+      <Deep title="Untuk yang penasaran: rumus panjang gelombang">
+        <p>
+          Panjang gelombang pasangan <Tex>{`i`}</Tex> adalah <Tex>{`\\lambda_i = 2\\pi \\cdot \\text{base}^{2i/d}`}</Tex>.
+          Setiap pasangan dikali faktor yang sama dari pasangan sebelumnya, sehingga panjang gelombangnya membentuk deret
+          geometri. Dengan base 10000, deret itu berjalan dari <Tex>{`2\\pi`}</Tex> mendekati{' '}
+          <Tex>{`10000 \\cdot 2\\pi`}</Tex>.
+        </p>
+      </Deep>
+      <Takeaway>Setiap angka dalam tanda posisi berayun dengan kecepatannya sendiri.</Takeaway>
     </section>
   )
 }

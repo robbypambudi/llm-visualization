@@ -716,3 +716,118 @@ input[type='range'] {
 .coming-soon {
   padding: 48px 0;
 }
+
+/* ---------- beginner aids ---------- */
+.takeaway {
+  max-width: 72ch;
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+.takeaway-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+.deep {
+  max-width: 72ch;
+  margin: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-1);
+  color: var(--text-secondary);
+}
+.deep > summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.deep > summary::marker {
+  color: var(--text-muted);
+}
+.deep[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+.deep-body {
+  padding: 12px 14px 4px;
+}
+.deep-body p {
+  margin: 0 0 12px;
+}
+.glossary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+.glossary dt {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.glossary dd {
+  margin: 0;
+}
+@media (max-width: 560px) {
+  .glossary {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .glossary dd {
+    margin-bottom: 8px;
+  }
+}
+.attempt {
+  margin-top: 24px;
+}
+.attempt-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.attempt h3 {
+  font-size: 18px;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+.verdict {
+  white-space: nowrap;
+}
+.verdict-yes,
+.verdict-no,
+.verdict-partial {
+  display: inline-block;
+  width: 1.2em;
+  font-weight: 700;
+}
+.verdict-yes {
+  color: var(--series-3);
+}
+.verdict-no {
+  color: var(--div-pos);
+}
+.verdict-partial {
+  color: var(--series-2);
+}
+.bits {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.table-text th,
+.table-text td {
+  text-align: left;
+  vertical-align: top;
+}
+.card + .prose,
+.card + .takeaway {
+  margin-top: 16px;
+}

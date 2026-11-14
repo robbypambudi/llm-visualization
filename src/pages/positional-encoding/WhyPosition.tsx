@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Segmented } from '../../components/Controls'
+import { Deep, Takeaway } from '../../components/Prose'
 import type { ChartTheme } from '../../lib/theme'
 import { hashString, peVector, randomNormalVector } from '../../lib/positional'
 
@@ -55,14 +56,17 @@ export function WhyPosition({ theme }: { theme: ChartTheme }) {
       </h2>
       <div className="prose">
         <p>
-          Self-attention menghitung skor antar token lewat dot product <code>q·k</code>. Tanpa informasi posisi,
-          operasi ini <strong>permutation-equivariant</strong>: jika urutan token diacak, keluarannya hanya ikut teracak
-          dengan cara yang sama. Bagi lapisan attention, “anjing menggigit kucing” dan “kucing menggigit anjing” adalah
-          kumpulan vektor yang sama persis.
+          Bayangkan kata-kata sebuah kalimat dimasukkan ke dalam kantong, lalu urutannya hilang: {'{'}anjing, menggigit,
+          kucing{'}'}. Siapa menggigit siapa? Kita tidak bisa tahu.
         </p>
         <p>
-          Paper Transformer menyelesaikannya dengan <strong>menjumlahkan</strong> vektor posisi ke embedding token
-          sebelum masuk ke stack encoder/decoder. Coba nyalakan dan matikan di bawah ini.
+          Bagian <strong>attention</strong> di Transformer mengalami hal yang sama. Ia melihat semua kata sekaligus, tetapi
+          tidak tahu kata mana yang datang lebih dulu. Bagi attention, “anjing menggigit kucing” dan “kucing menggigit
+          anjing” terlihat persis sama, padahal artinya berlawanan.
+        </p>
+        <p>
+          Solusi dari paper Transformer: sebelum masuk ke model, setiap kata diberi <strong>tanda posisi</strong>. Tanda itu
+          dijumlahkan ke vektor katanya. Coba tekan tombol di bawah dan lihat bedanya.
         </p>
       </div>
 
@@ -83,7 +87,7 @@ export function WhyPosition({ theme }: { theme: ChartTheme }) {
           />
           <span style={{ fontSize: 14 }}>
             Kumpulan vektor kedua kalimat identik?{' '}
-            <strong style={{ color: 'var(--text-primary)' }}>{same ? 'Ya — model tidak bisa membedakan urutan' : 'Tidak — urutan kini terbaca'}</strong>
+            <strong style={{ color: 'var(--text-primary)' }}>{same ? 'Ya. Model tidak bisa membedakan urutannya.' : 'Tidak. Urutannya kini terbaca.'}</strong>
           </span>
         </div>
         <div className="grid-2">
@@ -93,7 +97,7 @@ export function WhyPosition({ theme }: { theme: ChartTheme }) {
           ].map((s) => (
             <div key={s.label}>
               <div className="card-sub">
-                {s.label} · vektor input (d = {DEMO_D})
+                {s.label} · vektor yang masuk ke model ({DEMO_D} angka per kata, warna = nilai)
               </div>
               {s.tokens.map((t, i) => (
                 <div className="token-row" key={`${t}-${i}`}>
@@ -108,12 +112,21 @@ export function WhyPosition({ theme }: { theme: ChartTheme }) {
         </div>
       </div>
 
-      <div className="callout">
-        Catatan: pada model <em>decoder-only</em> dengan causal mask, simetri ini sebenarnya sudah sedikit pecah karena tiap
-        token hanya melihat token sebelumnya. Haviv dkk. (2022) menunjukkan LM kausal tanpa positional encoding (“NoPE”)
-        tetap bisa belajar posisi secara implisit. Meski begitu, banyak LLM tetap memakai skema posisi eksplisit — misalnya
-        GPT-2 (learned) dan LLaMA (RoPE), yang dibahas di bagian akhir.
-      </div>
+      <Deep title="Untuk yang penasaran: istilah teknisnya">
+        <p>
+          Attention menghitung skor antar token lewat perkalian titik (<em>dot product</em>) <code>q·k</code>. Tanpa
+          informasi posisi, operasi ini bersifat <strong>permutation-equivariant</strong>: jika urutan token diacak,
+          keluarannya ikut teracak dengan cara yang sama, tetapi isinya tidak berubah.
+        </p>
+        <p>
+          Ada satu catatan. Pada model yang menulis kata demi kata (<em>decoder-only</em>), setiap token hanya boleh melihat
+          token sebelumnya. Aturan ini sudah sedikit membocorkan urutan. Haviv dkk. (2022) menunjukkan model seperti ini
+          tetap bisa belajar posisi tanpa tanda posisi apa pun (“NoPE”). Meski begitu, kebanyakan LLM tetap memakai tanda
+          posisi, misalnya GPT-2 (learned) dan LLaMA (RoPE), yang dibahas di bagian 10.
+        </p>
+      </Deep>
+
+      <Takeaway>Tanpa tanda posisi, Transformer membaca kalimat seperti setumpuk kata tanpa urutan.</Takeaway>
     </section>
   )
 }

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { ColorBar, Heatmap } from '../../components/Heatmap'
 import { LineChart } from '../../components/LineChart'
+import { Deep, Takeaway } from '../../components/Prose'
 import { Tex } from '../../components/Tex'
 import { dot, peDotClosedForm, peMatrix } from '../../lib/positional'
 import type { ChartTheme } from '../../lib/theme'
@@ -39,30 +40,30 @@ export function SimilaritySection({ params, setPos, theme }: Props) {
   return (
     <section className="section" id="similarity">
       <h2>
-        <span className="section-num">6</span>Kemiripan antar posisi hanya bergantung pada jarak
+        <span className="section-num">7</span>Kemiripan dua posisi hanya ditentukan oleh jaraknya
       </h2>
       <div className="prose">
         <p>
-          Karena <Tex>{`\\sin a \\sin b + \\cos a \\cos b = \\cos(a-b)`}</Tex>, dot product dua vektor PE hanya
-          bergantung pada selisih posisinya:
+          Seberapa mirip tanda posisi 10 dengan posisi 11? Dengan posisi 50? Ternyata kemiripannya{' '}
+          <strong>hanya ditentukan oleh jaraknya</strong>. Pasangan posisi (10, 13) sama miripnya dengan (70, 73), karena
+          jaraknya sama-sama 3.
         </p>
-      </div>
-      <Tex block>{`PE_{p}\\cdot PE_{q} \\;=\\; \\sum_{i=0}^{d/2-1} \\cos\\big((p-q)\\,\\omega_i\\big), \\qquad \\lVert PE_p \\rVert^2 = \\tfrac{d}{2}`}</Tex>
-      <div className="prose">
         <p>
-          Akibatnya matriks kemiripannya konstan di sepanjang setiap diagonal (matriks Toeplitz) dan simetris. Kemiripan
-          menurun saat jarak bertambah, tetapi <strong>tidak monoton</strong> — ada riak kecil. Perhatikan juga bahwa
-          ini adalah kemiripan PE murni; di dalam model, PE dijumlahkan ke embedding lalu diproyeksikan oleh{' '}
-          <Tex>{`W_Q, W_K`}</Tex>, jadi skor attention sebenarnya tidak sesederhana ini.
+          Kenapa ini bagus? Konsep seperti “tiga kata sebelumnya” jadi berlaku sama di awal maupun di akhir kalimat.
+          Makin jauh jaraknya, makin tidak mirip. Namun turunnya tidak mulus, ada sedikit naik-turun (riak).
+        </p>
+        <p>
+          Gambar kiri: warna setiap sel adalah kemiripan posisi p dan q (1 = sama persis). Perhatikan garis-garis miringnya.
+          Di sepanjang setiap garis miring, warnanya sama, karena jaraknya sama. Gambar kanan: kemiripan terhadap jarak.
         </p>
       </div>
       <div className="grid-2">
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-            <div className="card-title">Cosine similarity PE(p)·PE(q) / (d/2)</div>
+            <div className="card-title">Kemiripan setiap pasangan posisi</div>
             <ColorBar scale={theme.diverging} min="−1" max="+1" />
           </div>
-          <div className="card-sub">Klik sel untuk memilih posisi p.</div>
+          <div className="card-sub">Cosine similarity, dari −1 sampai 1. Klik sel untuk memilih posisi p.</div>
           <Heatmap
             data={sim}
             rows={seqLen}
@@ -93,7 +94,7 @@ export function SimilaritySection({ params, setPos, theme }: Props) {
         </div>
         <div className="card">
           <div className="card-title">Kemiripan terhadap jarak k</div>
-          <div className="card-sub">Rumus tertutup Σ cos(k·ω_i)/(d/2); bentuknya sama untuk setiap posisi awal.</div>
+          <div className="card-sub">Kurvanya sama dari posisi awal mana pun. Arahkan kursor untuk mencocokkan dengan posisi terpilih.</div>
           <LineChart
             series={[
               {
@@ -121,6 +122,20 @@ export function SimilaritySection({ params, setPos, theme }: Props) {
           />
         </div>
       </div>
+      <Deep title="Untuk yang penasaran: kenapa hanya jarak yang berpengaruh">
+        <p>
+          Kemiripan diukur dengan <em>cosine similarity</em>: perkalian titik dua vektor dibagi panjang keduanya. Karena{' '}
+          <Tex>{`\\sin a \\sin b + \\cos a \\cos b = \\cos(a-b)`}</Tex>, setiap pasangan sin/cos menyumbang nilai
+          yang hanya bergantung pada selisih posisi:
+        </p>
+        <Tex block>{`PE_{p}\\cdot PE_{q} \\;=\\; \\sum_{i=0}^{d/2-1} \\cos\\big((p-q)\\,\\omega_i\\big), \\qquad \\lVert PE_p \\rVert^2 = \\tfrac{d}{2}`}</Tex>
+        <p>
+          Matriks yang nilainya sama di sepanjang setiap diagonal disebut matriks Toeplitz. Satu catatan penting: ini
+          kemiripan tanda posisi saja. Di dalam model, tanda posisi dijumlahkan ke embedding lalu dikalikan dengan matriks{' '}
+          <Tex>{`W_Q, W_K`}</Tex>, jadi skor attention yang sebenarnya tidak sesederhana ini.
+        </p>
+      </Deep>
+      <Takeaway>Yang dikenali dari tanda posisi bukan hanya “di mana”, tetapi juga “seberapa jauh”.</Takeaway>
     </section>
   )
 }
