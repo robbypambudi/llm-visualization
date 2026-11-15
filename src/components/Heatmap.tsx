@@ -178,13 +178,14 @@ interface ColorBarProps {
   min: string
   max: string
   negativeOnly?: boolean
+  positiveOnly?: boolean
 }
 
-export function ColorBar({ scale, min, max, negativeOnly = false }: ColorBarProps) {
+export function ColorBar({ scale, min, max, negativeOnly = false, positiveOnly = false }: ColorBarProps) {
   return (
     <div className="colorbar">
       <span>{min}</span>
-      <span className="colorbar-ramp" style={{ background: negativeOnly ? scale.gradientNeg : scale.gradient }} />
+      <span className="colorbar-ramp" style={{ background: negativeOnly ? scale.gradientNeg : positiveOnly ? scale.gradientPos : scale.gradient }} />
       <span>{max}</span>
     </div>
   )

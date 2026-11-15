@@ -79,12 +79,15 @@ export function makeDivergingScale(neg: string, mid: string, pos: string, steps 
   }
   const stops = Array.from({ length: 9 }, (_, i) => css(i / 4 - 1)).join(', ')
   const negStops = Array.from({ length: 5 }, (_, i) => css(i / 4 - 1)).join(', ')
+  const posStops = Array.from({ length: 5 }, (_, i) => css(i / 4)).join(', ')
   return {
     rgb,
     css,
     gradient: `linear-gradient(90deg, ${stops})`,
     /** Only the negative arm, for data that is never positive. */
     gradientNeg: `linear-gradient(90deg, ${negStops})`,
+    /** Only the positive arm, for data in [0, 1] such as attention weights. */
+    gradientPos: `linear-gradient(90deg, ${posStops})`,
   }
 }
 

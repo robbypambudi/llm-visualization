@@ -2,8 +2,13 @@ import { useEffect, useState } from 'react'
 import { ALL_CHAPTERS, DEFAULT_CHAPTER_ID } from './chapters'
 import { Sidebar } from './components/Sidebar'
 import { applyThemePref, readThemePref, useChartTheme } from './lib/theme'
+import { CausalMaskPage } from './pages/causal-mask/CausalMaskPage'
 import { ComingSoon } from './pages/ComingSoon'
+import { FeedForwardPage } from './pages/feed-forward/FeedForwardPage'
+import { MultiHeadPage } from './pages/multi-head/MultiHeadPage'
 import { PositionalEncodingPage } from './pages/positional-encoding/PositionalEncodingPage'
+import { ResidualNormPage } from './pages/residual-norm/ResidualNormPage'
+import { SelfAttentionPage } from './pages/self-attention/SelfAttentionPage'
 import { TokenEmbeddingPage } from './pages/token-embedding/TokenEmbeddingPage'
 import { TokenizationPage } from './pages/tokenization/TokenizationPage'
 
@@ -58,6 +63,16 @@ export default function App() {
             <TokenEmbeddingPage theme={theme} />
           ) : chapter.id === 'positional-encoding' ? (
             <PositionalEncodingPage theme={theme} />
+          ) : chapter.id === 'self-attention' ? (
+            <SelfAttentionPage theme={theme} />
+          ) : chapter.id === 'causal-mask' ? (
+            <CausalMaskPage theme={theme} />
+          ) : chapter.id === 'multi-head' ? (
+            <MultiHeadPage theme={theme} />
+          ) : chapter.id === 'residual-norm' ? (
+            <ResidualNormPage theme={theme} />
+          ) : chapter.id === 'feed-forward' ? (
+            <FeedForwardPage theme={theme} />
           ) : (
             <ComingSoon chapter={chapter} />
           )}

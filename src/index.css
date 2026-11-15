@@ -1033,3 +1033,213 @@ input[type='range'] {
 .segmented-wrap .segmented {
   flex-wrap: wrap;
 }
+
+/* Transformer block map (shared by the Transformer Block chapters) */
+.block-map {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.block-map svg {
+  width: 100%;
+  max-width: 330px;
+}
+.block-map figcaption {
+  text-align: center;
+  max-width: 330px;
+  margin: 0;
+}
+.bm-io {
+  font-size: 11.5px;
+  fill: var(--text-muted);
+}
+.bm-stream {
+  stroke: var(--axis);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.bm-stream.bm-on {
+  stroke: var(--accent);
+}
+.bm-stream-head {
+  fill: var(--axis);
+}
+.bm-stream-head.bm-on {
+  fill: var(--accent);
+}
+.bm-stream-label {
+  font-size: 11.5px;
+  fill: var(--text-muted);
+}
+.bm-stream-label.bm-on {
+  fill: var(--accent);
+  font-weight: 600;
+}
+.bm-wire path {
+  fill: none;
+  stroke: var(--axis);
+  stroke-width: 1.5;
+}
+.bm-arrowhead {
+  fill: var(--axis);
+}
+.bm-box rect {
+  fill: var(--surface-2);
+  stroke: var(--border);
+}
+.bm-box.bm-on rect {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.bm-box:hover rect,
+.bm-add:hover circle {
+  stroke: var(--accent);
+}
+.bm-title {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+.bm-sub {
+  font-size: 11px;
+  fill: var(--text-secondary);
+}
+.bm-add circle {
+  fill: var(--surface-1);
+  stroke: var(--axis);
+  stroke-width: 1.5;
+}
+.bm-add.bm-on circle {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+.bm-add text {
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+.header-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  margin-top: 16px;
+}
+.header-split .block-map svg {
+  width: 260px;
+}
+@media (max-width: 760px) {
+  .header-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .header-split .block-map svg {
+    width: 100%;
+  }
+}
+
+/* Horizontal weight bar in a table cell (attention weights, shares) */
+.w-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.w-value {
+  width: 48px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.w-track {
+  flex: 1;
+  max-width: 200px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.w-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--series-1);
+}
+
+/* Word-labelled attention matrix */
+.attn-grid-scroll {
+  overflow-x: auto;
+}
+.attn-grid {
+  display: grid;
+  gap: 2px;
+  min-width: min-content;
+  max-width: 560px;
+  font-size: 12.5px;
+}
+.attn-corner {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  align-self: end;
+  padding: 0 6px 4px 0;
+  white-space: nowrap;
+}
+.attn-col {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-align: center;
+  align-self: end;
+  padding-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attn-rowlabel {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-align: right;
+  padding-right: 8px;
+  align-self: center;
+  white-space: nowrap;
+}
+.attn-cell {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 7px 0;
+  border-radius: 3px;
+  cursor: default;
+}
+.attn-row-on .attn-rowlabel {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.attn-row-on .attn-cell {
+  outline: 2px solid var(--text-primary);
+  outline-offset: -1px;
+}
+.attn-row[role='row'] .attn-cell,
+.attn-row[role='row'] .attn-rowlabel {
+  cursor: pointer;
+}
+
+/* Context words (self-attention §1) */
+.ctx-word {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+.ctx-word[data-role='target'] {
+  background: color-mix(in srgb, var(--series-2) 24%, transparent);
+  font-weight: 700;
+}
+.ctx-word[data-role='clue'] {
+  background: color-mix(in srgb, var(--series-1) 20%, transparent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
